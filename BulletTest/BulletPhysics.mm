@@ -123,6 +123,31 @@
     dynamicsWorld->addRigidBody(groundRigidBody);
     floor.rigidbody = groundRigidBody;
     
+    // GameObject (lid)
+    GameObject* lid = [[GameObject alloc] init];
+    lid.transform.scale = GLKVector3Make(4, 1, 4);
+    lid.model = cubeModel;
+    lid.material = mat;
+    
+    btVector3 lidExtents(2,0.5,2);  // 1x1x1 cube
+    btBoxShape* lidShape = new btBoxShape(lidExtents);
+    btDefaultMotionState* lidMotion = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(0,3,3)));
+    btScalar lidMass = 1;
+    btVector3 lidInertia(0,0,0);
+    lidShape->calculateLocalInertia(lidMass, lidInertia);
+    btRigidBody::btRigidBodyConstructionInfo lidRbCi(lidMass,lidMotion,lidShape,lidInertia);
+    btRigidBody* lidRb = new btRigidBody(lidRbCi);
+    dynamicsWorld->addRigidBody(lidRb);   // add to physics world
+
+    // add hinge constraint
+    btTransform lidHingeTrans;
+    btVector3 hingePivot = btVector3(0, 0, 0);
+    btVector3 hingeDir   = btVector3(0, 0, 1);
+    btHingeConstraint* lidConstraint = new btHingeConstraint(*lidRb, hingePivot, hingeDir);
+    dynamicsWorld->addConstraint(lidConstraint);
+    
+    lid.rigidbody = lidRb;
+    
     // Game object 1 (sphere)
     sphere = [[GameObject alloc] init];
     [sphere.transform SetScale:0.5];    // this model has radius 2, so we'll scale it down to have radius 1
@@ -162,6 +187,7 @@
     [gameObjects addObject:sphere];
     [gameObjects addObject:go2];
     [gameObjects addObject:floor];
+    [gameObjects addObject:lid];
 
     // Camera lol
     [Renderer setCameraPosition:GLKVector3Make(0, 3, -10)];

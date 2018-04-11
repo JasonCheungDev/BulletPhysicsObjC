@@ -119,6 +119,7 @@
     groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(0,-1,0))); // (rotation, position)
     btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0,groundMotionState,groundShape,btVector3(0,0,0));
     groundRigidBody = new btRigidBody(groundRigidBodyCI);
+    groundRigidBody->setRestitution(1.0);
     dynamicsWorld->addRigidBody(groundRigidBody);
     floor.rigidbody = groundRigidBody;
     
@@ -135,6 +136,7 @@
     physicsSphereShape->calculateLocalInertia(physicsSphereMass, physicsSphereInertia);
     btRigidBody::btRigidBodyConstructionInfo physicsSphereRbCi(physicsSphereMass,physicsSphereMotion,physicsSphereShape,physicsSphereInertia);
     btRigidBody* physicsSphereRb = new btRigidBody(physicsSphereRbCi);
+    physicsSphereRb->setRestitution(0.5);
     dynamicsWorld->addRigidBody(physicsSphereRb);   // add to physics world
     sphere.rigidbody = physicsSphereRb;
     

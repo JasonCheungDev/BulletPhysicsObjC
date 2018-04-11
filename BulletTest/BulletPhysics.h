@@ -21,5 +21,6 @@
 
 -(void)OnSingleTap;
 -(void)OnDoubleTap;
+-(void)OnDrag :(float)x :(float)y;
 
 @end

@@ -60,4 +60,10 @@
     [bp OnDoubleTap];
 }
 
+- (IBAction)OnPan:(UIPanGestureRecognizer *)sender {
+    const float speed = 5.0;
+    CGPoint translation = [sender translationInView:sender.view];
+    [bp OnDrag :-translation.x * speed :-translation.y * speed];
+}
+
 @end

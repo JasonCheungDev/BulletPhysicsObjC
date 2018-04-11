@@ -35,6 +35,7 @@
     
     // game stuff
     GameObject* sphere;
+    GameObject* lid;
     bool isGameStarted;
 }
 
@@ -124,7 +125,7 @@
     floor.rigidbody = groundRigidBody;
     
     // GameObject (lid)
-    GameObject* lid = [[GameObject alloc] init];
+    lid = [[GameObject alloc] init];
     lid.transform.scale = GLKVector3Make(4, 1, 4);
     lid.model = cubeModel;
     lid.material = mat;
@@ -141,7 +142,7 @@
 
     // add hinge constraint
     btTransform lidHingeTrans;
-    btVector3 hingePivot = btVector3(0, 0, 0);
+    btVector3 hingePivot = btVector3(1, 0, 0);
     btVector3 hingeDir   = btVector3(0, 0, 1);
     btHingeConstraint* lidConstraint = new btHingeConstraint(*lidRb, hingePivot, hingeDir);
     dynamicsWorld->addConstraint(lidConstraint);
@@ -252,6 +253,14 @@
 -(void)OnDoubleTap
 {
     [self Restart];
+}
+
+-(void)OnDrag :(float)x :(float)y
+{
+    if (isGameStarted)
+    {
+        lid.rigidbody->applyCentralForce(btVector3(x,y,0));
+    }
 }
 
 @end

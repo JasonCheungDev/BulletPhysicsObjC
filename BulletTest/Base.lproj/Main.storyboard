@@ -45,6 +45,7 @@
                         <connections>
                             <outletCollection property="gestureRecognizers" destination="CZa-Hg-u8o" appends="YES" id="qn0-iD-axp"/>
                             <outletCollection property="gestureRecognizers" destination="D29-37-5p8" appends="YES" id="1vz-cp-fVK"/>
+                            <outletCollection property="gestureRecognizers" destination="zIB-wB-Fq5" appends="YES" id="ii9-29-IEr"/>
                         </connections>
                     </view>
                     <connections>
@@ -63,6 +64,11 @@
                         <action selector="OnDoubleTap:" destination="BYZ-38-t0r" id="JWI-zA-Tfc"/>
                     </connections>
                 </tapGestureRecognizer>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="zIB-wB-Fq5">
+                    <connections>
+                        <action selector="OnPan:" destination="BYZ-38-t0r" id="g2F-mW-uAb"/>
+                    </connections>
+                </panGestureRecognizer>
             </objects>
         </scene>
     </scenes>

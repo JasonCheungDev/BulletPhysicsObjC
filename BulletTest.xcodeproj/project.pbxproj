@@ -18,6 +18,7 @@
 		02FC32011E9ED7EC00B80515 /* libBulletCollision_xcode4.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 02FC31F41E9ED78100B80515 /* libBulletCollision_xcode4.a */; };
 		02FC32021E9ED7EC00B80515 /* libBulletDynamics_xcode4.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 02FC31F71E9ED78100B80515 /* libBulletDynamics_xcode4.a */; };
 		02FC32031E9ED7EC00B80515 /* libLinearMath_xcode4.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 02FC31FA1E9ED78100B80515 /* libLinearMath_xcode4.a */; };
+		7BBB4D1A207E9F4C006628EB /* MyContactResult.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7BBB4D18207E9F4C006628EB /* MyContactResult.cpp */; };
 		DE2916F2207D323500A90216 /* tile.obj in Resources */ = {isa = PBXBuildFile; fileRef = DE2916F1207D323500A90216 /* tile.obj */; };
 		DEC3B1CF2075A8C4008262B0 /* Transform.m in Sources */ = {isa = PBXBuildFile; fileRef = DEC3B1C12075A8C1008262B0 /* Transform.m */; };
 		DEC3B1D02075A8C4008262B0 /* Material.m in Sources */ = {isa = PBXBuildFile; fileRef = DEC3B1C22075A8C1008262B0 /* Material.m */; };
@@ -113,6 +114,8 @@
 		02FC31E91E9ED78100B80515 /* BulletCollision.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = BulletCollision.xcodeproj; path = "BulletTest/bullet-2.82-r2704/build/xcode4ios/BulletCollision.xcodeproj"; sourceTree = "<group>"; };
 		02FC31EC1E9ED78100B80515 /* BulletDynamics.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = BulletDynamics.xcodeproj; path = "BulletTest/bullet-2.82-r2704/build/xcode4ios/BulletDynamics.xcodeproj"; sourceTree = "<group>"; };
 		02FC31EF1E9ED78100B80515 /* LinearMath.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = LinearMath.xcodeproj; path = "BulletTest/bullet-2.82-r2704/build/xcode4ios/LinearMath.xcodeproj"; sourceTree = "<group>"; };
+		7BBB4D18207E9F4C006628EB /* MyContactResult.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MyContactResult.cpp; sourceTree = "<group>"; };
+		7BBB4D19207E9F4C006628EB /* MyContactResult.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MyContactResult.hpp; sourceTree = "<group>"; };
 		DE2916F1207D323500A90216 /* tile.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = tile.obj; sourceTree = "<group>"; };
 		DEC3B1C12075A8C1008262B0 /* Transform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Transform.m; sourceTree = "<group>"; };
 		DEC3B1C22075A8C1008262B0 /* Material.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Material.m; sourceTree = "<group>"; };
@@ -203,6 +206,8 @@
 				0294A36A1ABC85B300B119B8 /* Images.xcassets */,
 				0294A36C1ABC85B300B119B8 /* LaunchScreen.xib */,
 				0294A35D1ABC85B300B119B8 /* Supporting Files */,
+				7BBB4D18207E9F4C006628EB /* MyContactResult.cpp */,
+				7BBB4D19207E9F4C006628EB /* MyContactResult.hpp */,
 			);
 			path = BulletTest;
 			sourceTree = "<group>";
@@ -473,6 +478,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DEC3B1D02075A8C4008262B0 /* Material.m in Sources */,
+				7BBB4D1A207E9F4C006628EB /* MyContactResult.cpp in Sources */,
 				DEC3B1D32075A8C4008262B0 /* GameObject.mm in Sources */,
 				0294A3661ABC85B300B119B8 /* ViewController.m in Sources */,
 				DEC3B1DB2075A9E5008262B0 /* GLESRenderer.cpp in Sources */,

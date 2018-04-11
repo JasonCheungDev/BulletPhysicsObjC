@@ -9,6 +9,7 @@
 #import "BulletPhysics.h"
 #import <GLKit/GLKVector3.h>
 #include <stdlib.h>
+#include "MyContactResult.hpp"
 //#include "bullet-2.82-r2704/src/btBulletDynamicsCommon.h"
 #include "btBulletDynamicsCommon.h"
 #import "GameObject.h"
@@ -36,7 +37,9 @@
     // game stuff
     GameObject* sphere;
     GameObject* lid;
+    GameObject* box;
     bool isGameStarted;
+    int score;
 }
 
 @end
@@ -58,6 +61,7 @@
 
         // SETUP GAME
         isGameStarted = false;
+        score = 0;
         
         NSLog(@"Starting bullet physics...\n");
     }
@@ -142,7 +146,7 @@
 
     // add hinge constraint
     btTransform lidHingeTrans;
-    btVector3 hingePivot = btVector3(1, 0, 0);
+    btVector3 hingePivot = btVector3(-1, 0, 0);
     btVector3 hingeDir   = btVector3(0, 0, 1);
     btHingeConstraint* lidConstraint = new btHingeConstraint(*lidRb, hingePivot, hingeDir);
     dynamicsWorld->addConstraint(lidConstraint);
@@ -156,37 +160,38 @@
     sphere.material = mat;
 
     btSphereShape* physicsSphereShape = new btSphereShape(1);
-    btDefaultMotionState* physicsSphereMotion = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(2,5,3)));
+    btDefaultMotionState* physicsSphereMotion = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(1,5,3)));
     btScalar physicsSphereMass = 1;
     btVector3 physicsSphereInertia(0,0,0);
     physicsSphereShape->calculateLocalInertia(physicsSphereMass, physicsSphereInertia);
     btRigidBody::btRigidBodyConstructionInfo physicsSphereRbCi(physicsSphereMass,physicsSphereMotion,physicsSphereShape,physicsSphereInertia);
     btRigidBody* physicsSphereRb = new btRigidBody(physicsSphereRbCi);
     physicsSphereRb->setRestitution(0.5);
+    physicsSphereRb->setCollisionFlags(physicsSphereRb->getCollisionFlags() |
+                             btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
     dynamicsWorld->addRigidBody(physicsSphereRb);   // add to physics world
     sphere.rigidbody = physicsSphereRb;
     
-    
     // Game object 2 (cube)
-    GameObject* go2 = [[GameObject alloc] init];
+    box = [[GameObject alloc] init];
     // [go2.transform SetScale: 1];    // this model has radius 0.5 (same as physics obj), so no need to change.
-    go2.model = cubeModel;
-    go2.material = mat;
-    
+    box.model = cubeModel;
+    box.material = mat;
+
     btVector3 cubeShapeHalfExtents(0.5,0.5,0.5);  // 1x1x1 cube
     btBoxShape* physicsCubeShape = new btBoxShape(cubeShapeHalfExtents);
-    btDefaultMotionState* physicsCubeMotion = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(-2,5,3)));
+    btDefaultMotionState* physicsCubeMotion = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(2,1,3)));
     btScalar physicsCubeMass = 1;
     btVector3 physicsCubeInertia(0,0,0);
     physicsCubeShape->calculateLocalInertia(physicsCubeMass, physicsCubeInertia);
     btRigidBody::btRigidBodyConstructionInfo physicsCubeRbCi(physicsCubeMass,physicsCubeMotion,physicsCubeShape,physicsCubeInertia);
     btRigidBody* physicsCubeRb = new btRigidBody(physicsCubeRbCi);
     dynamicsWorld->addRigidBody(physicsCubeRb);   // add to physics world
-    go2.rigidbody = physicsCubeRb;
+    box.rigidbody = physicsCubeRb;
     
     // Add to draw list
     [gameObjects addObject:sphere];
-    [gameObjects addObject:go2];
+    [gameObjects addObject:box];
     [gameObjects addObject:floor];
     [gameObjects addObject:lid];
 
@@ -195,6 +200,23 @@
     [Renderer setCameraYRotation:180];
     [Renderer setCameraXRotation:0];
 }
+
+struct MyContactResult : public btCollisionWorld::ContactResultCallback
+{
+    bool hit = false;
+    btScalar addSingleResult(btManifoldPoint& cp,
+                             const btCollisionObjectWrapper* colObj0Wrap,
+                             int partId0,
+                             int index0,
+                             const btCollisionObjectWrapper* colObj1Wrap,
+                             int partId1,
+                             int index1)
+    {
+        hit = true;
+        NSLog(@"COLLISION DETECTED");
+        return 0;
+    }
+};
 
 -(void)Update:(float)elapsedTime
 {
@@ -205,7 +227,26 @@
     go.rigidbody->getMotionState()->getWorldTransform(trans);
     btTransform floorTrans;
     groundRigidBody->getMotionState()->getWorldTransform(floorTrans);
-    NSLog(@"%f\t%f\t%f\n", elapsedTime*1000, trans.getOrigin().getY(), floorTrans.getOrigin().getY());
+    // NSLog(@"%f\t%f\t%f\n", elapsedTime*1000, trans.getOrigin().getY(), floorTrans.getOrigin().getY());
+
+    MyContactResult boxHit;
+    MyContactResult groundHit;
+    dynamicsWorld->contactPairTest(sphere.rigidbody, box.rigidbody, boxHit);
+    dynamicsWorld->contactPairTest(sphere.rigidbody, groundRigidBody, groundHit);
+
+    if (boxHit.hit)
+    {
+        score++;
+        [self Restart];
+    }
+    
+    if (groundHit.hit)
+    {
+        score--;
+        [self Restart];
+    }
+    
+    // NSLog(@"%d", cb.someValue);
 }
 
 -(void)Draw
@@ -220,6 +261,7 @@
 
 -(void)Restart
 {
+    NSLog(@"Game restarting score %d", score);
     isGameStarted = false;
     dynamicsWorld->setGravity(btVector3(0,0,0));
     [self SetupObjects];
@@ -260,7 +302,13 @@
     if (isGameStarted)
     {
         lid.rigidbody->applyCentralForce(btVector3(x,y,0));
+
     }
 }
+
+
+
+
+
 
 @end

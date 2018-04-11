@@ -8,11 +8,13 @@
 
 #import "ViewController.h"
 #import "BulletPhysics.h"
-#import "BulletPhysics.h"
+#include <GLKit/GLKVector3.h>
 
 @interface ViewController ()
 {
     BulletPhysics *bp;
+    IBOutlet UILabel *ObjectPositionLabel;
+    IBOutlet UILabel *GravityLabel;
 }
 
 @end
@@ -40,6 +42,22 @@
 - (void) glkView:(GLKView *)view drawInRect:(CGRect)rect
 {
     [bp Draw];
+    
+    GLKVector3 pos = [bp GetObjectPosition];
+    ObjectPositionLabel.text = [NSString stringWithFormat:@"Pos(%.2f,%.2f,%.2f)", pos.x, pos.y, pos.z];
+    
+    GLKVector3 grav = [bp GetGravity];
+    GravityLabel.text = [NSString stringWithFormat:@"Gravity: %.2f", grav.y];
+}
+
+// MARK:- Gestures
+
+- (IBAction)OnSingleTap:(UITapGestureRecognizer *)sender {
+    [bp OnSingleTap];
+}
+
+- (IBAction)OnDoubleTap:(UITapGestureRecognizer *)sender {
+    [bp OnDoubleTap];
 }
 
 @end

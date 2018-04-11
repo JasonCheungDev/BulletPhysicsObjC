@@ -16,4 +16,10 @@
 -(void)Update:(float)elapsedTime;
 -(void)Draw;
 
+-(GLKVector3)GetObjectPosition;
+-(GLKVector3)GetGravity;
+
+-(void)OnSingleTap;
+-(void)OnDoubleTap;
+
 @end

@@ -2,11 +2,13 @@
 //  BulletPhysics.m
 //  BulletTest
 //
-//  Created by Borna Noureddin on 2015-03-20.
+//  Created by Borna Noureddin on 2015-03-20 & adapted by Jason Cheung on 2018-04-10
 //  Copyright (c) 2015 BCIT. All rights reserved.
 //
 
 #import "BulletPhysics.h"
+#import <GLKit/GLKVector3.h>
+#include <stdlib.h>
 //#include "bullet-2.82-r2704/src/btBulletDynamicsCommon.h"
 #include "btBulletDynamicsCommon.h"
 #import "GameObject.h"
@@ -30,6 +32,10 @@
     // rendering stuff
     Renderer* renderer;
     NSMutableArray* gameObjects;
+    
+    // game stuff
+    GameObject* sphere;
+    bool isGameStarted;
 }
 
 @end
@@ -46,9 +52,11 @@
         collisionConfiguration = new btDefaultCollisionConfiguration();
         dispatcher = new btCollisionDispatcher(collisionConfiguration);
         solver = new btSequentialImpulseConstraintSolver;
-
         dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
-        dynamicsWorld->setGravity(btVector3(0,-10,0));
+        dynamicsWorld->setGravity(btVector3(0,0,0));
+
+        // SETUP GAME
+        isGameStarted = false;
         
         NSLog(@"Starting bullet physics...\n");
     }
@@ -81,7 +89,14 @@
 // when initial setup is done, spawn objects in the world
 -(void)SetupObjects
 {
-    // GAME ENGINE
+    // Cleanup any previous resources
+    for (int i = 0; i < gameObjects.count; i++)
+    {
+        GameObject* go = [gameObjects objectAtIndex:i];
+        dynamicsWorld->removeRigidBody(go.rigidbody);
+        delete go.rigidbody;
+    }
+    [gameObjects removeAllObjects];
     
     // Create some shared resources
     ObjReader* objReader = [[ObjReader alloc] init];
@@ -108,10 +123,10 @@
     floor.rigidbody = groundRigidBody;
     
     // Game object 1 (sphere)
-    GameObject* go = [[GameObject alloc] init];
-    [go.transform SetScale:0.5];    // this model has radius 2, so we'll scale it down to have radius 1
-    go.model = sphereModel;
-    go.material = mat;
+    sphere = [[GameObject alloc] init];
+    [sphere.transform SetScale:0.5];    // this model has radius 2, so we'll scale it down to have radius 1
+    sphere.model = sphereModel;
+    sphere.material = mat;
 
     btSphereShape* physicsSphereShape = new btSphereShape(1);
     btDefaultMotionState* physicsSphereMotion = new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1),btVector3(2,5,3)));
@@ -121,7 +136,7 @@
     btRigidBody::btRigidBodyConstructionInfo physicsSphereRbCi(physicsSphereMass,physicsSphereMotion,physicsSphereShape,physicsSphereInertia);
     btRigidBody* physicsSphereRb = new btRigidBody(physicsSphereRbCi);
     dynamicsWorld->addRigidBody(physicsSphereRb);   // add to physics world
-    go.rigidbody = physicsSphereRb;
+    sphere.rigidbody = physicsSphereRb;
     
     
     // Game object 2 (cube)
@@ -142,7 +157,7 @@
     go2.rigidbody = physicsCubeRb;
     
     // Add to draw list
-    [gameObjects addObject:go];
+    [gameObjects addObject:sphere];
     [gameObjects addObject:go2];
     [gameObjects addObject:floor];
 
@@ -172,6 +187,43 @@
     {
         [renderer drawGameObject :[gameObjects objectAtIndex:i]];
     }
+}
+
+-(void)Restart
+{
+    isGameStarted = false;
+    dynamicsWorld->setGravity(btVector3(0,0,0));
+    [self SetupObjects];
+}
+
+-(GLKVector3)GetObjectPosition
+{
+    btTransform trans;
+    sphere.rigidbody->getMotionState()->getWorldTransform(trans);
+    return GLKVector3Make(trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ());
+}
+
+-(GLKVector3)GetGravity
+{
+    btVector3 g = dynamicsWorld->getGravity();
+    return GLKVector3Make(g.getX(), g.getY(), g.getZ());
+}
+
+// MARK:- Gestures
+
+-(void)OnSingleTap
+{
+    if (!isGameStarted)
+    {
+        int r = arc4random_uniform(20);
+        dynamicsWorld->setGravity(btVector3(0,-r,0));
+        isGameStarted = true;
+    }
+}
+
+-(void)OnDoubleTap
+{
+    [self Restart];
 }
 
 @end

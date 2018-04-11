@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_0" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -20,10 +20,49 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC" customClass="GLKView">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Y Pos: #" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="paQ-ep-w5w">
+                                <rect key="frame" x="0.0" y="0.0" width="63" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Gravity: (#,#,#)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Sq-tY-gzZ">
+                                <rect key="frame" x="204" y="0.0" width="116" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstItem="paQ-ep-w5w" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="6yp-5R-Ghf"/>
+                            <constraint firstItem="paQ-ep-w5w" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="Gog-25-EYY"/>
+                            <constraint firstAttribute="trailing" secondItem="0Sq-tY-gzZ" secondAttribute="trailing" id="Vg4-Sf-kel"/>
+                            <constraint firstItem="0Sq-tY-gzZ" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="jj2-Z0-lM2"/>
+                        </constraints>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="CZa-Hg-u8o" appends="YES" id="qn0-iD-axp"/>
+                            <outletCollection property="gestureRecognizers" destination="D29-37-5p8" appends="YES" id="1vz-cp-fVK"/>
+                        </connections>
                     </view>
+                    <connections>
+                        <outlet property="GravityLabel" destination="0Sq-tY-gzZ" id="EIz-d1-W59"/>
+                        <outlet property="ObjectPositionLabel" destination="paQ-ep-w5w" id="o2v-Bw-65e"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="CZa-Hg-u8o" userLabel="Single Tap Gesture">
+                    <connections>
+                        <action selector="OnSingleTap:" destination="BYZ-38-t0r" id="V0s-um-ICR"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer numberOfTapsRequired="2" id="D29-37-5p8" userLabel="Double Tap Gesture">
+                    <connections>
+                        <action selector="OnDoubleTap:" destination="BYZ-38-t0r" id="JWI-zA-Tfc"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
         </scene>
     </scenes>
